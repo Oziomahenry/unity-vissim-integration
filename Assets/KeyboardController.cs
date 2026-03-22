@@ -1,33 +1,32 @@
 using UnityEngine;
 
 /// <summary>
-/// Control bus volumes and vehicle speed with keyboard.
+/// Control bus volumes, vehicle speed, and simulation switching with keyboard.
 /// </summary>
 public class KeyboardController : MonoBehaviour
 {
     [Header("Vehicle Settings")]
-    public int selectedVehicleId = 101;   // Vehicle to control
-    public float speedStep = 5f;          // Speed increment (m/s)
+    public int selectedVehicleId = 101;
+    public float speedStep = 5f;
 
     [Header("Bus Input Settings")]
-    public int selectedBusInputId = 5;    // Bus input to control
-    public int volumeStep = 5;            // Bus volume increment (vehicles/hour)
+    public int selectedBusInputId = 5;
+    public int volumeStep = 5;
 
     private float currentSpeed = 0f;
     private int currentBusVolume = 0;
 
     void Start()
     {
-        // Initialize current values (optional)
         currentSpeed = 0f;
         currentBusVolume = 0;
     }
 
     void Update()
     {
-        // ------------------------
-        // Vehicle speed control
-        // ------------------------
+        // ========================
+        // 🚗 VEHICLE SPEED CONTROL
+        // ========================
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             currentSpeed += speedStep;
@@ -42,9 +41,9 @@ public class KeyboardController : MonoBehaviour
             Debug.Log($"Decreased vehicle {selectedVehicleId} speed to {currentSpeed}");
         }
 
-        // ------------------------
-        // Bus volume control
-        // ------------------------
+        // ========================
+        // 🚌 BUS VOLUME CONTROL
+        // ========================
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentBusVolume += volumeStep;
@@ -57,6 +56,27 @@ public class KeyboardController : MonoBehaviour
             currentBusVolume = Mathf.Max(0, currentBusVolume - volumeStep);
             BusVolumeManager.Instance?.SetBusVolume(selectedBusInputId, currentBusVolume);
             Debug.Log($"Decreased bus input {selectedBusInputId} volume to {currentBusVolume}");
+        }
+
+        // ========================
+        // 🔄 SIMULATION SWITCHING
+        // ========================
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            VissimUdpClient.Instance?.SelectSimulation(0);
+            Debug.Log("Switched to Simulation 0");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            VissimUdpClient.Instance?.SelectSimulation(1);
+            Debug.Log("Switched to Simulation 1");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            VissimUdpClient.Instance?.SelectSimulation(2);
+            Debug.Log("Switched to Simulation 2");
         }
     }
 }

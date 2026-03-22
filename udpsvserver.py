@@ -114,9 +114,9 @@ class SimulationManager:
 # ------------------------------------------------------------
 
 paths = [
-    r"C:\Users\User\Downloads\vissim_sc0.inpx",
-    r"C:\Users\User\Downloads\vissim_sc1.inpx",
-    r"C:\Users\User\Downloads\vissim_sc2.inpx"
+     r"C:\Users\User\Downloads\vissim_withbstop.inpx",
+     r"C:\Users\User\Downloads\vissim_withbstop.inpx",
+     r"C:\Users\User\Downloads\vissim_withbstop.inpx"
 ]
 
 manager = SimulationManager(paths)
