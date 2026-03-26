@@ -8,18 +8,29 @@ public class ControlBoardUI : MonoBehaviour
     [Header("UI Text")]
     public TextMeshProUGUI boardText;
 
+    // --------------------------
+    // STATE VARIABLES
+    // --------------------------
     private int currentSimulation = 0;
+    private int currentVehicleId = 0;
     private float currentSpeed = 0f;
     private int currentBusVolume = 0;
 
     void Awake()
     {
+        // Singleton pattern
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+
         UpdateBoard("System ready");
     }
 
     // --------------------------
-    // UPDATE SIMULATION
+    // SETTERS
     // --------------------------
     public void SetSimulation(int index)
     {
@@ -27,18 +38,18 @@ public class ControlBoardUI : MonoBehaviour
         UpdateBoard("Simulation switched");
     }
 
-    // --------------------------
-    // UPDATE SPEED
-    // --------------------------
+    public void SetVehicle(int vehicleId)
+    {
+        currentVehicleId = vehicleId;
+        UpdateBoard("Vehicle switched");
+    }
+
     public void SetSpeed(float speed)
     {
         currentSpeed = speed;
         UpdateBoard("Vehicle speed changed");
     }
 
-    // --------------------------
-    // UPDATE BUS VOLUME
-    // --------------------------
     public void SetBusVolume(int volume)
     {
         currentBusVolume = volume;
@@ -50,9 +61,12 @@ public class ControlBoardUI : MonoBehaviour
     // --------------------------
     private void UpdateBoard(string lastAction)
     {
+        if (boardText == null) return;
+
         boardText.text =
             "=== CONTROL BOARD ===\n\n" +
             $"Simulation: {currentSimulation}\n" +
+            $"Vehicle: {currentVehicleId}\n" +
             $"Vehicle Speed: {currentSpeed} m/s\n" +
             $"Bus Volume: {currentBusVolume}\n\n" +
             $"Last Action: {lastAction}";

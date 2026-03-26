@@ -2,64 +2,122 @@ using UnityEngine;
 
 public class KeyboardController : MonoBehaviour
 {
-    public int selectedVehicleId = 101;
-    public float speedStep = 5f;
+    // ----------------------------
+    // VEHICLE SELECTION
+    // ----------------------------
+    public int[] vehicleIds = { 200, 100, 190, 610, 620 };
+    private int currentVehicleIndex = 0;
 
+    public float speedStep = 1f; // smoother control
+    private float currentSpeed = 0f;
+
+    // ----------------------------
+    // BUS CONTROL
+    // ----------------------------
     public int selectedBusInputId = 5;
     public int volumeStep = 5;
-
-    private float currentSpeed = 0f;
     private int currentBusVolume = 0;
+
+    // ----------------------------
+    // SIMULATION KEYS
+    // ----------------------------
+    private KeyCode[] simulationKeys = { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3 };
+
+    void Start()
+    {
+        if (vehicleIds.Length > 0)
+        {
+            SetVehicle(currentVehicleIndex);
+        }
+    }
 
     void Update()
     {
-        // SPEED
+        HandleVehicleSwitch();
+        HandleSpeedControl();
+        HandleBusVolumeControl();
+        HandleSimulationSwitch();
+    }
+
+    // ----------------------------
+    // VEHICLE SWITCH
+    // ----------------------------
+    private void HandleVehicleSwitch()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            currentVehicleIndex = (currentVehicleIndex + 1) % vehicleIds.Length;
+            SetVehicle(currentVehicleIndex);
+        }
+    }
+
+    private void SetVehicle(int index)
+    {
+        int vehicleId = vehicleIds[index];
+        Debug.Log("Switched to vehicle: " + vehicleId);
+        ControlBoardUI.Instance?.SetVehicle(vehicleId);
+    }
+
+    // ----------------------------
+    // SPEED CONTROL
+    // ----------------------------
+    private void HandleSpeedControl()
+    {
+        int selectedVehicleId = vehicleIds[currentVehicleIndex];
+
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             currentSpeed += speedStep;
-            SpeedManager.Instance?.SetVehicleSpeed(selectedVehicleId, currentSpeed);
-            ControlBoardUI.Instance?.SetSpeed(currentSpeed);
+            ApplySpeed(selectedVehicleId);
         }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             currentSpeed = Mathf.Max(0, currentSpeed - speedStep);
-            SpeedManager.Instance?.SetVehicleSpeed(selectedVehicleId, currentSpeed);
-            ControlBoardUI.Instance?.SetSpeed(currentSpeed);
+            ApplySpeed(selectedVehicleId);
         }
+    }
 
-        // BUS VOLUME
+    private void ApplySpeed(int vehicleId)
+    {
+        SpeedManager.Instance?.SetVehicleSpeed(vehicleId, currentSpeed);
+        ControlBoardUI.Instance?.SetSpeed(currentSpeed);
+    }
+
+    // ----------------------------
+    // BUS VOLUME CONTROL
+    // ----------------------------
+    private void HandleBusVolumeControl()
+    {
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentBusVolume += volumeStep;
-            BusVolumeManager.Instance?.SetBusVolume(selectedBusInputId, currentBusVolume);
-            ControlBoardUI.Instance?.SetBusVolume(currentBusVolume);
+            ApplyBusVolume();
         }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentBusVolume = Mathf.Max(0, currentBusVolume - volumeStep);
-            BusVolumeManager.Instance?.SetBusVolume(selectedBusInputId, currentBusVolume);
-            ControlBoardUI.Instance?.SetBusVolume(currentBusVolume);
+            ApplyBusVolume();
         }
+    }
 
-        // SWITCH SIM
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            VissimUdpClient.Instance?.SelectSimulation(0);
-            ControlBoardUI.Instance?.SetSimulation(0);
-        }
+    private void ApplyBusVolume()
+    {
+        BusVolumeManager.Instance?.SetBusVolume(selectedBusInputId, currentBusVolume);
+        ControlBoardUI.Instance?.SetBusVolume(currentBusVolume);
+    }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+    // ----------------------------
+    // SIMULATION SWITCH
+    // ----------------------------
+    private void HandleSimulationSwitch()
+    {
+        for (int i = 0; i < simulationKeys.Length; i++)
         {
-            VissimUdpClient.Instance?.SelectSimulation(1);
-            ControlBoardUI.Instance?.SetSimulation(1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            VissimUdpClient.Instance?.SelectSimulation(2);
-            ControlBoardUI.Instance?.SetSimulation(2);
+            if (Input.GetKeyDown(simulationKeys[i]))
+            {
+                VissimUdpClient.Instance?.SelectSimulation(i);
+                ControlBoardUI.Instance?.SetSimulation(i);
+            }
         }
     }
 }

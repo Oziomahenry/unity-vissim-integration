@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a471ccc91d6eecf4cb6b41481258a430, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedVehicleId: 101
+  vehicleIds: c800000064000000be000000620200006c020000
   speedStep: 5
   selectedBusInputId: 5
   volumeStep: 5
@@ -962,9 +962,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bb837f0a0055bc44ac1a104eee38b08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPrefab: {fileID: 8736280841210140238, guid: a0e040f660a713648a946eeee3315b14, type: 3}
-  lgvPrefab: {fileID: 3591475690729459264, guid: 5b7497a4e5771af429ce39978cd59811, type: 3}
-  hgvPrefab: {fileID: 8358816531541430330, guid: 17842e0dc5c9cea429a7e13644b40bac, type: 3}
+  carPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
+  lgvPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
+  hgvPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
   bikePrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
   lerpSpeed: 10
   rotationSpeed: 5
