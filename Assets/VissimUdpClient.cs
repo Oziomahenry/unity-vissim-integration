@@ -22,9 +22,7 @@ public class VissimUdpClient : MonoBehaviour
     private ConcurrentQueue<StateMessage> messageQueue =
         new ConcurrentQueue<StateMessage>();
 
-    // ------------------------------------------------------------
-    // INIT
-    // ------------------------------------------------------------
+    private int currentSim = -1;
 
     void Awake()
     {
@@ -50,7 +48,7 @@ public class VissimUdpClient : MonoBehaviour
             receiveThread.IsBackground = true;
             receiveThread.Start();
 
-            SendHello();
+            SendRaw("{\"type\":\"hello\"}");
 
             Debug.Log("UDP connected to VISSIM server.");
         }
@@ -59,21 +57,6 @@ public class VissimUdpClient : MonoBehaviour
             Debug.LogError("UDP connection failed: " + e.Message);
         }
     }
-
-    void SendHello()
-    {
-        try
-        {
-            string json = "{\"type\":\"hello\"}";
-            byte[] data = Encoding.UTF8.GetBytes(json);
-            udp.Send(data, data.Length);
-        }
-        catch { }
-    }
-
-    // ------------------------------------------------------------
-    // RECEIVE THREAD (Python → Unity)
-    // ------------------------------------------------------------
 
     void ReceiveLoop()
     {
@@ -110,15 +93,22 @@ public class VissimUdpClient : MonoBehaviour
         }
     }
 
-    // ------------------------------------------------------------
-    // MAIN THREAD (apply updates safely)
-    // ------------------------------------------------------------
-
     void Update()
     {
         while (messageQueue.TryDequeue(out StateMessage msg))
         {
             if (msg.type != "state") continue;
+
+            // 🔥 scenario change detection
+            if (msg.sim != currentSim)
+            {
+                Debug.Log($"Scenario changed → sc{msg.sim}");
+
+                VehicleManager.Instance?.ClearAllVehicles();
+                PedestrianManager.Instance?.ClearAllPedestrians();
+
+                currentSim = msg.sim;
+            }
 
             // VEHICLES
             if (msg.vehicles != null)
@@ -149,71 +139,39 @@ public class VissimUdpClient : MonoBehaviour
         }
     }
 
-    // ------------------------------------------------------------
-    // SEND COMMANDS (Unity → Python)
-    // ------------------------------------------------------------
+    // ---------------- SEND ----------------
 
-    // Switch active simulation
     public void SelectSimulation(int index)
     {
-        var msg = new
-        {
-            type = "select_sim",
-            index = index
-        };
-
-        SendJson(msg);
-        Debug.Log($"Switched to simulation sc{index}");
+        SendRaw($"{{\"type\":\"select_sim\",\"index\":{index}}}");
     }
 
-    // Change bus volume (ALL simulations)
     public void SetBusVolume(int vehInputId, int volume)
     {
-        var msg = new
-        {
-            type = "bus_input",
-            id = vehInputId,
-            volume = volume
-        };
-
-        SendJson(msg);
-        Debug.Log($"Bus volume set: id={vehInputId}, volume={volume}");
+        SendRaw($"{{\"type\":\"bus_input\",\"id\":{vehInputId},\"volume\":{volume}}}");
     }
 
-    // Change vehicle speed (ACTIVE simulation)
     public void SetVehicleSpeed(int vehicleId, float speed)
     {
-        var msg = new
-        {
-            type = "set_speed",
-            id = vehicleId,
-            speed = speed
-        };
-
-        SendJson(msg);
-        Debug.Log($"Vehicle speed set: id={vehicleId}, speed={speed}");
+        SendRaw($"{{\"type\":\"set_speed\",\"id\":{vehicleId},\"speed\":{speed}}}");
     }
 
-    // Generic sender
-    void SendJson(object obj)
+    void SendRaw(string json)
     {
         if (udp == null) return;
 
         try
         {
-            string json = JsonUtility.ToJson(obj);
             byte[] data = Encoding.UTF8.GetBytes(json);
             udp.Send(data, data.Length);
+
+            Debug.Log("Sent: " + json);
         }
-        catch
+        catch (Exception e)
         {
-            Debug.LogWarning("Failed to send UDP message.");
+            Debug.LogWarning("UDP send failed: " + e.Message);
         }
     }
-
-    // ------------------------------------------------------------
-    // CLEANUP
-    // ------------------------------------------------------------
 
     void OnApplicationQuit()
     {

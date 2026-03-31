@@ -15,17 +15,59 @@ class VissimSimulation:
         self.vissim.LoadNet(filepath)
 
         self.vissim.Simulation.SetAttValue("SimRes", 1)
+        self.vissim.Simulation.SetAttValue("SimPeriod", 3600)
+
         self.vissim.Graphics.CurrentNetworkWindow.SetAttValue("QuickMode", 1)
 
-        # Cache vehicle inputs (performance optimization)
+        # Cache vehicle inputs
         self.vehicle_inputs = {
             vi.AttValue("No"): vi
             for vi in self.vissim.Net.VehicleInputs
         }
 
-    def step(self):
-        self.vissim.Simulation.RunSingleStep()
+        self.initialized = False
 
+    # ----------------------------
+    # SAFE INITIALIZATION
+    # ----------------------------
+    def initialize(self):
+        try:
+            self.vissim.Simulation.Stop()
+            self.vissim.Simulation.RunContinuous()
+            time.sleep(0.1)
+            self.vissim.Simulation.Stop()
+            self.initialized = True
+            print("[INFO] Simulation initialized")
+        except Exception as e:
+            print("[ERROR] Initialization failed:", e)
+
+    # ----------------------------
+    # SAFE STEP
+    # ----------------------------
+    def step(self):
+        try:
+            if not self.initialized:
+                self.initialize()
+                return
+
+            sim_time = self.vissim.Simulation.AttValue("SimSec")
+            sim_end = self.vissim.Simulation.AttValue("SimPeriod")
+
+            # Restart if finished
+            if sim_time >= sim_end:
+                print("[INFO] Restarting simulation")
+                self.initialized = False
+                return
+
+            self.vissim.Simulation.RunSingleStep()
+
+        except Exception as e:
+            print("[ERROR] step failed:", e)
+            self.initialized = False  # force reinit next loop
+
+    # ----------------------------
+    # DATA EXTRACTION
+    # ----------------------------
     def get_vehicles(self):
         try:
             data = self.vissim.Net.Vehicles.GetMultipleAttributes(
@@ -79,19 +121,20 @@ class VissimSimulation:
     def set_vehicle_speed(self, vehicle_id, speed):
         try:
             v = self.vissim.Net.Vehicles.ItemByKey(vehicle_id)
-            v.SetAttValue("Speed", speed)
+            if v:
+                v.SetAttValue("Speed", speed)
         except Exception as e:
             print(f"[Error] set_vehicle_speed: {e}")
 
 
 # ------------------------------------------------------------
-# SIMULATION MANAGER (SINGLE INSTANCE)
+# SIMULATION MANAGER
 # ------------------------------------------------------------
 
 class SimulationManager:
     def __init__(self, path):
         self.simulation = VissimSimulation(path, "single")
-        self.active_index = 0  # logical scenario
+        self.active_index = 0
 
     def set_active(self, idx):
         self.active_index = idx
@@ -111,10 +154,10 @@ class SimulationManager:
 
 
 # ------------------------------------------------------------
-# LOAD SINGLE NETWORK
+# LOAD NETWORK
 # ------------------------------------------------------------
 
-path = r"C:\Users\User\Downloads\vissim_withbstop.inpx"
+path = r"C:\Users\User\unity-vissim integration\vissim_withbstop_ variant 1.1 - Copy.inpx"
 manager = SimulationManager(path)
 
 # ------------------------------------------------------------
@@ -153,18 +196,15 @@ while True:
 
             cmd = json.loads(data.decode("utf-8"))
 
-            # SWITCH SCENARIO (LOGICAL)
             if cmd.get("type") == "select_sim":
                 manager.set_active(cmd.get("index", 0))
 
-            # BUS VOLUME
             elif cmd.get("type") == "bus_input":
                 manager.apply_bus_to_all(
                     cmd.get("id"),
                     cmd.get("volume")
                 )
 
-            # VEHICLE SPEED
             elif cmd.get("type") == "set_speed":
                 manager.set_speed_active(
                     cmd.get("id"),
@@ -201,4 +241,5 @@ while True:
         except Exception as e:
             print("[Warning] send failed:", e)
 
-    time.sleep(0.01)
+    # 🔥 CRITICAL: slower = stable
+    time.sleep(0.03)

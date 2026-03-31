@@ -167,6 +167,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &144440995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 144440997}
+  - component: {fileID: 144440998}
+  m_Layer: 0
+  m_Name: staticmodel3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &144440997
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144440995}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1264.008, y: 478.70193, z: -234.54323}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &144440998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144440995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bcf9d7c17b81b94da0e2ce7cfa200e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vissimTxt: {fileID: 4900000, guid: 05dcd483c4e5a7142adccf791d0ce9e2, type: 3}
+  roadMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  pedestrianMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &213601498
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,29 +942,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1676266683}
-  - component: {fileID: 1676266682}
+  - component: {fileID: 1676266684}
   m_Layer: 0
-  m_Name: staticmodel
+  m_Name: staticmodel1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1676266682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1676266681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eeb9294e11546ae4fbd3978f1dfcae49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vissimTxt: {fileID: 4900000, guid: 24114abe1698b50429ee4df34375bfbf, type: 3}
-  roadMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  pedestrianMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!4 &1676266683
 Transform:
   m_ObjectHideFlags: 0
@@ -933,6 +965,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1676266684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1676266681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb9294e11546ae4fbd3978f1dfcae49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vissimTxt: {fileID: 4900000, guid: 78ec55510e557df46af5027010ddc2a3, type: 3}
+  roadMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  pedestrianMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &1706293880
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,11 +1010,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
-  lgvPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
-  hgvPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
-  bikePrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
-  lerpSpeed: 10
-  rotationSpeed: 5
+  truckPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
+  busPrefab: {fileID: 6045844975968634400, guid: e5f0307175b15724cb499fc85aa33c1c, type: 3}
+  lerpSpeed: 8
 --- !u!4 &1706293882
 Transform:
   m_ObjectHideFlags: 0
@@ -1029,6 +1074,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2126241169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2126241171}
+  - component: {fileID: 2126241172}
+  m_Layer: 0
+  m_Name: staticmodel2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2126241171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126241169}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1264.008, y: 478.70193, z: -234.54323}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2126241172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126241169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f0badf395da8448913a033d49220f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vissimTxt: {fileID: 4900000, guid: 61a84d3bd646b804c8b4475903af03db, type: 3}
+  roadMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  pedestrianMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1044,3 +1136,5 @@ SceneRoots:
   - {fileID: 79056881}
   - {fileID: 1305745148}
   - {fileID: 1676266683}
+  - {fileID: 2126241171}
+  - {fileID: 144440997}

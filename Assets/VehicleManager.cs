@@ -5,75 +5,84 @@ public class VehicleManager : MonoBehaviour
 {
     public static VehicleManager Instance;
 
+    // -----------------------------
+    // CAR PREFABS (ASSIGN IN INSPECTOR)
+    // -----------------------------
     [Header("Vehicle Prefabs")]
-    public GameObject carPrefab;
-    public GameObject lgvPrefab;
-    public GameObject hgvPrefab;
-    public GameObject bikePrefab;
+    public GameObject carPrefab;        // default car
+    public GameObject truckPrefab;      // optional
+    public GameObject busPrefab;        // optional
 
-    [Header("Movement Settings")]
-    [Tooltip("Speed factor for Lerp movement of vehicles.")]
-    public float lerpSpeed = 10f;
+    // -----------------------------
+    // MOVEMENT SETTINGS
+    // -----------------------------
+    [Header("Movement")]
+    public float lerpSpeed = 8f;
 
-    [Tooltip("Smooth rotation speed when facing movement direction.")]
-    public float rotationSpeed = 5f;
-
+    // -----------------------------
+    // INTERNAL DATA
+    // -----------------------------
     private class VehicleData
     {
         public GameObject obj;
         public Vector3 targetPos;
-        public int lastSeq;     // for UDP ordering
-        public Vector3 lastPos; // for rotation calculation
+        public float speed;
+        public int lastSeq;
     }
 
     private Dictionary<int, VehicleData> vehicles = new Dictionary<int, VehicleData>();
 
+    // -----------------------------
+    // SINGLETON
+    // -----------------------------
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
+
         Instance = this;
     }
 
-    // --------------------------------------------------
-    // CALLED FROM UDP CLIENT
-    // --------------------------------------------------
-    /// <summary>
-    /// Update or spawn a vehicle.
-    /// </summary>
-    public void UpdateVehicle(int id, int type, Vector3 targetPos, float speed, int seq = 0)
+    // -----------------------------
+    // UPDATE VEHICLE FROM UDP
+    // -----------------------------
+    public void UpdateVehicle(int id, int type, Vector3 targetPos, float speed, int seq = -1)
     {
         if (!vehicles.TryGetValue(id, out VehicleData data))
         {
-            // Spawn new vehicle
-            GameObject obj = Instantiate(GetPrefab(type), targetPos, Quaternion.identity);
+            GameObject prefab = GetPrefab(type);
+
+            GameObject obj = Instantiate(prefab, targetPos, Quaternion.identity);
             obj.name = $"Vehicle_{id}_Type_{type}";
+            obj.transform.SetParent(transform);
 
             data = new VehicleData
             {
                 obj = obj,
                 targetPos = targetPos,
-                lastSeq = seq,
-                lastPos = targetPos
+                speed = speed,
+                lastSeq = seq
             };
 
             vehicles[id] = data;
             return;
         }
 
-        // Drop old UDP packets
-        if (seq < data.lastSeq) return;
+        // Ignore old packets
+        if (seq >= 0 && seq < data.lastSeq)
+            return;
 
         data.lastSeq = seq;
         data.targetPos = targetPos;
+        data.speed = speed;
     }
 
-    // --------------------------------------------------
-    // SMOOTH MOVEMENT LOOP
-    // --------------------------------------------------
+    // -----------------------------
+    // SMOOTH MOVEMENT
+    // -----------------------------
     void Update()
     {
         var removeKeys = new List<int>();
@@ -81,67 +90,70 @@ public class VehicleManager : MonoBehaviour
         foreach (var kv in vehicles)
         {
             VehicleData data = kv.Value;
+
             if (data.obj == null)
             {
                 removeKeys.Add(kv.Key);
                 continue;
             }
 
-            // Smooth position
+            // Smooth movement
             data.obj.transform.position = Vector3.Lerp(
                 data.obj.transform.position,
                 data.targetPos,
-                Time.deltaTime * lerpSpeed
+                1 - Mathf.Exp(-lerpSpeed * Time.deltaTime)
             );
 
-            // Smooth rotation
-            Vector3 direction = data.targetPos - data.obj.transform.position;
-            if (direction.magnitude > 0.01f)
+            // Optional: rotate toward movement direction
+            Vector3 dir = data.targetPos - data.obj.transform.position;
+            if (dir != Vector3.zero)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                Quaternion lookRotation = Quaternion.LookRotation(dir);
                 data.obj.transform.rotation = Quaternion.Slerp(
                     data.obj.transform.rotation,
-                    targetRotation,
-                    Time.deltaTime * rotationSpeed
+                    lookRotation,
+                    Time.deltaTime * 5f
                 );
             }
-
-            data.lastPos = data.obj.transform.position;
         }
 
-        // Cleanup destroyed vehicles
         foreach (int key in removeKeys)
             vehicles.Remove(key);
     }
 
-    // --------------------------------------------------
+    // -----------------------------
     // PREFAB SELECTION
-    // --------------------------------------------------
+    // -----------------------------
     private GameObject GetPrefab(int type)
     {
         switch (type)
         {
-            case 100: return carPrefab;
-            case 190: return lgvPrefab;
-            case 200: return hgvPrefab;
-            case 610:
-            case 620: return bikePrefab;
+            case 100: // Car
+                return carPrefab;
+
+            case 200: // Bus
+                return busPrefab != null ? busPrefab : carPrefab;
+
+            case 300: // Truck (optional)
+                return truckPrefab != null ? truckPrefab : carPrefab;
+
             default:
-                Debug.LogWarning($"Unknown VehType {type}, using carPrefab");
+                Debug.LogWarning($"Unknown vehicle type {type}, using car prefab");
                 return carPrefab;
         }
     }
 
-    // --------------------------------------------------
-    // OPTIONAL: Reset all vehicles
-    // --------------------------------------------------
-    public void ClearAll()
+    // -----------------------------
+    // CLEAR ALL VEHICLES (SCENARIO RESET)
+    // -----------------------------
+    public void ClearAllVehicles()
     {
         foreach (var kv in vehicles)
         {
             if (kv.Value.obj != null)
                 Destroy(kv.Value.obj);
         }
+
         vehicles.Clear();
     }
 }

@@ -114,9 +114,9 @@ class SimulationManager:
 # ------------------------------------------------------------
 
 paths = [
-     r"C:\Users\User\Downloads\vissim_withbstop.inpx",
-     r"C:\Users\User\Downloads\vissim_withbstop.inpx",
-     r"C:\Users\User\Downloads\vissim_withbstop.inpx"
+     r"C:\Users\User\unity-vissim integration\vissim_withbstop_final_version.inpx",
+     r"C:\Users\User\unity-vissim integration\vissim_withbstop_ variant 1.1 - Copy.inpx",
+     r"C:\Users\User\unity-vissim integration\var 3 - Copy.inpx"
 ]
 
 manager = SimulationManager(paths)

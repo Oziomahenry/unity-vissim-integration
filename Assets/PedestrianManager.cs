@@ -5,14 +5,22 @@ public class PedestrianManager : MonoBehaviour
 {
     public static PedestrianManager Instance;
 
+    // -----------------------------
+    // PREFABS (ASSIGN IN INSPECTOR)
+    // -----------------------------
     [Header("Pedestrian Prefabs")]
     public GameObject manPrefab;
     public GameObject womanPrefab;
 
-    [Header("Movement Settings")]
-    [Tooltip("Speed factor for Lerp movement of pedestrians.")]
+    // -----------------------------
+    // MOVEMENT SETTINGS
+    // -----------------------------
+    [Header("Movement")]
     public float lerpSpeed = 5f;
 
+    // -----------------------------
+    // INTERNAL DATA
+    // -----------------------------
     private class PedData
     {
         public GameObject obj;
@@ -22,33 +30,33 @@ public class PedestrianManager : MonoBehaviour
 
     private Dictionary<int, PedData> pedestrians = new Dictionary<int, PedData>();
 
+    // -----------------------------
+    // SINGLETON
+    // -----------------------------
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
+
         Instance = this;
     }
 
-    // --------------------------------------------------
-    // CALLED FROM UDP CLIENT
-    // --------------------------------------------------
-    /// <summary>
-    /// Update or spawn a pedestrian.
-    /// </summary>
-    /// <param name="id">Unique pedestrian ID</param>
-    /// <param name="type">Pedestrian type (matches VISSIM)</param>
-    /// <param name="targetPos">Target position from VISSIM</param>
-    /// <param name="seq">Optional sequence number for ordering (-1 = ignore)</param>
+    // -----------------------------
+    // UPDATE FROM UDP
+    // -----------------------------
     public void UpdatePedestrian(int id, int type, Vector3 targetPos, int seq = -1)
     {
         if (!pedestrians.TryGetValue(id, out PedData data))
         {
-            // Spawn new pedestrian
-            GameObject obj = Instantiate(GetPrefab(type), targetPos, Quaternion.identity);
+            // Create new pedestrian
+            GameObject prefab = GetPrefab(type);
+
+            GameObject obj = Instantiate(prefab, targetPos, Quaternion.identity);
             obj.name = $"Ped_{id}_Type_{type}";
+            obj.transform.SetParent(transform);
 
             data = new PedData
             {
@@ -61,7 +69,7 @@ public class PedestrianManager : MonoBehaviour
             return;
         }
 
-        // Ignore out-of-order packets (if sequence used)
+        // Ignore old packets if sequence is used
         if (seq >= 0 && seq < data.lastSeq)
             return;
 
@@ -69,9 +77,9 @@ public class PedestrianManager : MonoBehaviour
         data.targetPos = targetPos;
     }
 
-    // --------------------------------------------------
+    // -----------------------------
     // SMOOTH MOVEMENT
-    // --------------------------------------------------
+    // -----------------------------
     void Update()
     {
         var removeKeys = new List<int>();
@@ -82,49 +90,51 @@ public class PedestrianManager : MonoBehaviour
 
             if (data.obj == null)
             {
-                // Mark destroyed objects for cleanup
                 removeKeys.Add(kv.Key);
                 continue;
             }
 
-            // Smoothly move pedestrian toward target position
             data.obj.transform.position = Vector3.Lerp(
                 data.obj.transform.position,
                 data.targetPos,
-                Time.deltaTime * lerpSpeed
+                1 - Mathf.Exp(-lerpSpeed * Time.deltaTime)
             );
         }
 
-        // Remove destroyed pedestrians
         foreach (int key in removeKeys)
             pedestrians.Remove(key);
     }
 
-    // --------------------------------------------------
+    // -----------------------------
     // PREFAB SELECTION
-    // --------------------------------------------------
+    // -----------------------------
     private GameObject GetPrefab(int type)
     {
         switch (type)
         {
-            case 100: return manPrefab;     // Man
-            case 200: return womanPrefab;   // Woman
+            case 100: // Man
+                return manPrefab;
+
+            case 200: // Woman
+                return womanPrefab;
+
             default:
-                Debug.LogWarning($"Unknown PedType {type}, using man prefab");
+                Debug.LogWarning($"Unknown pedestrian type: {type}. Using man prefab.");
                 return manPrefab;
         }
     }
 
-    // --------------------------------------------------
-    // OPTIONAL: Reset all pedestrians
-    // --------------------------------------------------
-    public void ClearAll()
+    // -----------------------------
+    // CLEAR ALL (USED FOR SCENARIOS)
+    // -----------------------------
+    public void ClearAllPedestrians()
     {
         foreach (var kv in pedestrians)
         {
             if (kv.Value.obj != null)
                 Destroy(kv.Value.obj);
         }
+
         pedestrians.Clear();
     }
 }
