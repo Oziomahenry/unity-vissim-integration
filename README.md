@@ -95,25 +95,43 @@ pip install pywin32
 ---
 
 ## Results
+
 ### Static Models
+
+#### Scenario 0 – Static Model
+![Static model of scenario zero.](images/image.png)
+
+#### Scenario 1 – Static Model
+![Static model of scenario one.](images/image-1.png)
+
+#### Scenario 3 – Static Model
+![Static model of scenario three.](images/image-2.png)
+
+---
+
+### Overlay of Scenarios
+![Overlay of the three static models.](images/image-3.png)
+
+---
+
+### Dynamic Simulation (Real-Time Transmission)
+
 #### Scenario 0
-![Static model of scenario zero.](image.png)
-![Static model of scenario one.](image-1.png)
-![Static model of scenario three.](image-2.png)
-![Overlay of the three static
-models.](image-3.png)
-![Scenario zero simulation
-transmission of dynamic state data from
-Vissim to Unity.](image-4.png)
-![Scenario one simulation trans-
-mission of dynamic state data from Vis-
-sim to Unity.](image-5.png)
-![Scenario three simulation transmission of
-dynamic state data from Vissim to Unity.](image-6.png)
+![Scenario zero simulation transmission of dynamic state data from Vissim to Unity.](images/image-4.png)
+
+#### Scenario 1
+![Scenario one simulation transmission of dynamic state data from Vissim to Unity.](images/image-5.png)
+
+#### Scenario 3
+![Scenario three simulation transmission of dynamic state data from Vissim to Unity.](images/image-6.png)
+
+---
+
+### Observations
 - Accurate mapping of static models from VISSIM to Unity  
 - Successful overlay of multiple scenarios  
 - Real-time visualization of vehicle and pedestrian movement  
-- Functional bidirectional interaction  
+- Functional bidirectional interaction   
 
 ### Performance Note
 Large UDP payloads may reduce performance.  
