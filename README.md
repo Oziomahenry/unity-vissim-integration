@@ -96,34 +96,60 @@ pip install pywin32
 
 ## Results
 
+---
+
 ### Static Models
 
-#### Scenario 0 – Static Model
-![Static model of scenario zero.](images/image.png)
+<p align="center">
+  <img src="images/image.png" width="70%">
+</p>
+<p align="center"><b>Figure 1:</b> Static model of scenario zero.</p>
 
-#### Scenario 1 – Static Model
-![Static model of scenario one.](images/image-1.png)
+---
 
-#### Scenario 3 – Static Model
-![Static model of scenario three.](images/image-2.png)
+<p align="center">
+  <img src="images/image-1.png" width="70%">
+</p>
+<p align="center"><b>Figure 2:</b> Static model of scenario one.</p>
+
+---
+
+<p align="center">
+  <img src="images/image-2.png" width="70%">
+</p>
+<p align="center"><b>Figure 3:</b> Static model of scenario three.</p>
 
 ---
 
 ### Overlay of Scenarios
-![Overlay of the three static models.](images/image-3.png)
+
+<p align="center">
+  <img src="images/image-3.png" width="75%">
+</p>
+<p align="center"><b>Figure 4:</b> Overlay of the three static models.</p>
 
 ---
 
 ### Dynamic Simulation (Real-Time Transmission)
 
-#### Scenario 0
-![Scenario zero simulation transmission of dynamic state data from Vissim to Unity.](images/image-4.png)
+<p align="center">
+  <img src="images/image-4.png" width="75%">
+</p>
+<p align="center"><b>Figure 5:</b> Scenario zero simulation transmission of dynamic state data from VISSIM to Unity.</p>
 
-#### Scenario 1
-![Scenario one simulation transmission of dynamic state data from Vissim to Unity.](images/image-5.png)
+---
 
-#### Scenario 3
-![Scenario three simulation transmission of dynamic state data from Vissim to Unity.](images/image-6.png)
+<p align="center">
+  <img src="images/image-5.png" width="75%">
+</p>
+<p align="center"><b>Figure 6:</b> Scenario one simulation transmission of dynamic state data from VISSIM to Unity.</p>
+
+---
+
+<p align="center">
+  <img src="images/image-6.png" width="75%">
+</p>
+<p align="center"><b>Figure 7:</b> Scenario three simulation transmission of dynamic state data from VISSIM to Unity.</p>
 
 ---
 
@@ -131,7 +157,7 @@ pip install pywin32
 - Accurate mapping of static models from VISSIM to Unity  
 - Successful overlay of multiple scenarios  
 - Real-time visualization of vehicle and pedestrian movement  
-- Functional bidirectional interaction   
+- Functional bidirectional interaction    
 
 ### Performance Note
 Large UDP payloads may reduce performance.  
