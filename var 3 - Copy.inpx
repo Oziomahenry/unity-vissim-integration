@@ -2067,7 +2067,7 @@
 		<routGuid1 interval="999999" offset="0" strategy="NEWROUTETODESTINATIONPARKINGLOT"/>
 		<routGuid2 interval="999999" offset="0" strategy="NEWROUTETODESTINATIONPARKINGLOT"/>
 	</dynamicAssignment>
-	<evaluation autoCreateResultColumns="true" boschEmiCalcAct="false" databaseConnection="" evalOutDir="#data#vissimfolder\" harshDecel="-4" keepPrevResults="KEEPALL" listAutoExportType="FILE" nodesDelaySegmentStart="100" pet="5" queueBeginSpeed="5" queueConsiderAdjacentLanes="true" queueEndSpeed="10" queueMaxClear="20" queueMaxLength="500" ttc="1.5">
+	<evaluation autoCreateResultColumns="true" boschEmiCalcAct="false" databaseConnection="" evalOutDir="#data#var 3 - Copy.results\" harshDecel="-4" keepPrevResults="KEEPALL" listAutoExportType="FILE" nodesDelaySegmentStart="100" pet="5" queueBeginSpeed="5" queueConsiderAdjacentLanes="true" queueEndSpeed="10" queueMaxClear="20" queueMaxLength="500" ttc="1.5">
 		<areaMeasRawData fromTime="0" toTime="99999" writeFile="true"/>
 		<areaMeasResults collectData="false" fromTime="0" interval="99999" toTime="99999"/>
 		<areaResults collectData="false" fromTime="0" interval="99999" toTime="99999"/>
