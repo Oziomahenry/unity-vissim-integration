@@ -6,8 +6,7 @@ This project presents a **bidirectional real-time co-simulation platform** integ
 - **PTV VISSIM** → microscopic traffic simulation  
 - **Unity** → interactive 3D visualization  
 
-The integration enables real-time interaction with traffic simulations, improving safety analysis and reducing costs in transportation research.
-
+The integration enables real-time interaction with traffic simulations. 
 ---
 
 ## Key Features
@@ -52,7 +51,7 @@ The integration enables real-time interaction with traffic simulations, improvin
 - Unity (C#)  
 - Python  
 - COM Interface  
-- UDP Networking  
+- User Datagram Protocol (UDP) Networking  
 - JSON  
 
 ---
@@ -161,7 +160,7 @@ pip install pywin32
 
 ### Performance Note
 Large UDP payloads may reduce performance.  
-Recommended: adjust simulation parameters gradually (~10 seconds interval).
+
 
 ---
 
