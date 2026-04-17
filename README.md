@@ -76,7 +76,7 @@ To run the Python–VISSIM–Unity integration, the following dependencies are r
 
 Install required Python packages:
 
-```bash
+
 pip install pywin32
 
 ## Methodology
